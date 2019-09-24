@@ -1,14 +1,28 @@
+// Error handling anyone?
 const fetch = require("node-fetch");
 const cheerio = require("cheerio");
 const difference = require("lodash.difference");
 const orderBy = require("lodash.orderby");
+const { argv } = require("yargs")
+  .usage("Usage: $0 [options]")
+  .example(
+    "$0 -p theme-ui",
+    "Prints the download count of the packages that depend on theme-ui sorted by weekly download count."
+  )
+  // -p or --package-name.
+  .alias("p", "package-name")
+  .nargs("p", 1)
+  .describe("p", "Package name.")
+  .demandOption("p", "Provide a package name with -p package-name.")
+  .string("p")
+  // -h or --help.
+  .alias("h", "help")
+  // --version. Add a comma, lol.
+  .describe("version", "Show version number.");
 
-// const packageName = "react";
-const packageName = "react-swipeable-views";
-
+const { packageName } = argv;
 const dependentURL = `https://www.npmjs.com/browse/depended/${packageName}`;
-
-const maxResults = 300;
+const maxDependents = 300;
 
 (async () => {
   /**
@@ -38,7 +52,7 @@ const maxResults = 300;
 
     // Debug console.log statement.
     console.log(nextPage || "Reached the end", result.length);
-    if (nextPage && result.length <= maxResults)
+    if (nextPage && result.length <= maxDependents)
       return getDependents(`https://www.npmjs.com${nextPage}`, result);
 
     return result;

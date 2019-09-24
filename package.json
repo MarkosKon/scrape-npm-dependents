@@ -1,6 +1,6 @@
 {
   "name": "scrape-npm-dependents",
-  "description": "A script that sorts the dependents of a package by popularity.",
+  "description": "A script that sorts by weekly downloads the dependents of a package.",
   "private": true,
   "version": "1.0.0",
   "main": "src/index.js",
@@ -36,12 +36,9 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "inquirer": "^7.0.0",
     "lodash.difference": "^4.5.0",
     "lodash.orderby": "^4.6.0",
-    "mkdirp": "^0.5.1",
     "node-fetch": "^2.6.0",
-    "progress": "^2.0.3",
     "yargs": "^14.0.0"
   },
   "devDependencies": {

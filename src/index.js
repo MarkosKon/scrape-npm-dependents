@@ -64,7 +64,7 @@ const checkStatus = res => {
       })
       .attr("href");
 
-    // Debug console.log statement.
+    // Debug.
     console.log(
       (dependents.length > 0 && nextPage) || "Reached the end",
       result.length
@@ -84,6 +84,14 @@ const checkStatus = res => {
     );
     return;
   }
+
+  // Debug. I'm getting duplicates while scraping for some
+  // reason.
+  console.log(
+    `Scraped ${dependents.length} dependents for ${packageName} and of those ${
+      Array.from(new Set(dependents)).length
+    } are unique.`
+  );
 
   /**
    * 2. Separate the scoped packages from the others because
@@ -121,12 +129,11 @@ const checkStatus = res => {
     fetch(`https://api.npmjs.org/downloads/point/last-week/${scoped}`)
       .then(checkStatus)
       .then(res => res.json())
-      .catch(() => {
+      .catch(() =>
         console.log(
           `Failed to get the download counts for the scoped package: ${scoped}`
-        );
-        return { package: scoped, downloads: "Unknown" };
-      })
+        )
+      )
   );
 
   const result = await Promise.all([

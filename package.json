@@ -6,6 +6,9 @@
   "main": "src/index.js",
   "author": "Mark",
   "license": "MIT",
+  "bin": {
+    "snd": "./src/index.js"
+  },
   "scripts": {
     "start": "node src/index.js",
     "start:m": "nodemon src/index.js --ignore data",

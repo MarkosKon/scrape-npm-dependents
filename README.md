@@ -7,5 +7,6 @@ A script that sorts by weekly downloads the dependents of a package. It's useful
 - clone the repository
 - `node src/index.js -p theme-ui`
 - or `yarn start -p theme-ui`
+- or `npm link` and `snd -p theme-ui`
 
 Stops if the dependents are more than 300.

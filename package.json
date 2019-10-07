@@ -13,7 +13,11 @@
     "start": "node src/index.js",
     "start:m": "nodemon src/index.js --ignore data",
     "lint": "eslint --ext js src",
-    "format": "eslint --ext js --fix src"
+    "format": "eslint --ext js --fix src",
+    "test": "react-scripts test",
+    "test:ci": "cross-env CI=true react-scripts test",
+    "test:staged": "yarn test:ci --findRelatedTests --bail",
+    "test:coverage": "yarn test:ci --coverage"
   },
   "husky": {
     "hooks": {

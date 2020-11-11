@@ -27,7 +27,7 @@ const { packageName } = argv;
 const dependentURL = `https://www.npmjs.com/browse/depended/${packageName}`;
 const maxDependents = 300;
 
-const checkStatus = res => {
+const checkStatus = (res) => {
   if (res.ok) return res;
   throw Error(res.statusText);
 };
@@ -40,12 +40,14 @@ const checkStatus = res => {
   async function getDependents(url, result = []) {
     const dependentsResult = await fetch(url)
       .then(checkStatus)
-      .catch(err =>
+      .catch((err) =>
         console.log(`Failed to get the dependents for URL ${url}:`, err)
       );
     const dependentHtml = await dependentsResult
       .text()
-      .catch(err => console.log(`Failed to get the HTML for URL ${url}:`, err));
+      .catch((err) =>
+        console.log(`Failed to get the HTML for URL ${url}:`, err)
+      );
 
     const $ = cheerio.load(dependentHtml);
 
@@ -75,7 +77,7 @@ const checkStatus = res => {
 
     return result;
   }
-  const dependents = await getDependents(dependentURL).catch(err =>
+  const dependents = await getDependents(dependentURL).catch((err) =>
     console.log(`Failed to get the dependents for ${packageName}`, err)
   );
 
@@ -99,16 +101,16 @@ const checkStatus = res => {
    * the npm download count api doesn't support bulk downloads
    * for scoped packages.
    */
-  const scopedDependents = dependents.filter(d => d.match(/@/));
+  const scopedDependents = dependents.filter((d) => d.match(/@/));
   const unScopedDependents = difference(dependents, scopedDependents);
 
   // Bulk downloads count limit is 128.
-  const unScopedPromises = chunk(unScopedDependents, 128).map(c =>
+  const unScopedPromises = chunk(unScopedDependents, 128).map((c) =>
     fetch(`https://api.npmjs.org/downloads/point/last-week/${c.join(",")}`)
       .then(checkStatus)
-      .then(res => res.json())
-      .then(json => Object.values(json))
-      .catch(err => {
+      .then((res) => res.json())
+      .then((json) => Object.values(json))
+      .catch((err) => {
         console.log(
           `Failed to get the download counts for the un-scoped packages.`
         );
@@ -119,17 +121,17 @@ const checkStatus = res => {
   // if I want to know which failed.
   let failedUnscopedPackages;
   const unScopedPromisesFlattened = Promise.all(unScopedPromises)
-    .then(res => flatten(res))
-    .then(res => {
-      const successes = res.filter(i => i).map(i => i.package);
+    .then((res) => flatten(res))
+    .then((res) => {
+      const successes = res.filter((i) => i).map((i) => i.package);
       failedUnscopedPackages = difference(unScopedDependents, successes);
       return res;
     });
 
-  const scopedPromises = scopedDependents.map(scoped =>
+  const scopedPromises = scopedDependents.map((scoped) =>
     fetch(`https://api.npmjs.org/downloads/point/last-week/${scoped}`)
       .then(checkStatus)
-      .then(res => res.json())
+      .then((res) => res.json())
       .catch(() =>
         console.log(
           `Failed to get the download counts for the scoped package: ${scoped}`
@@ -139,8 +141,8 @@ const checkStatus = res => {
 
   const result = await Promise.all([
     unScopedPromisesFlattened,
-    ...scopedPromises
-  ]).catch(err => console.log(`Failed to get the download counts.`, err));
+    ...scopedPromises,
+  ]).catch((err) => console.log(`Failed to get the download counts.`, err));
   const downloadCounts = result.reduce((acc, next) => acc.concat(next), []);
   const sortedDownloadCounts = orderBy(
     downloadCounts,

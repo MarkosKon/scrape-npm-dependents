@@ -7,6 +7,7 @@ const chunk = require("lodash.chunk");
 const chalk = require("chalk");
 const Table = require("cli-table");
 const { argv } = require("yargs")
+  .scriptName("snd")
   .usage("Usage: $0 [options]")
   .example(
     "$0 -p theme-ui",

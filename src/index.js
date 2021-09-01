@@ -4,6 +4,7 @@ const cheerio = require("cheerio");
 const difference = require("lodash.difference");
 const orderBy = require("lodash.orderby");
 const chunk = require("lodash.chunk");
+const chalk = require("chalk");
 const { argv } = require("yargs")
   .usage("Usage: $0 [options]")
   .example(
@@ -40,14 +41,20 @@ const checkStatus = (res) => {
   async function getDependents(url, result = []) {
     const dependentsResult = await fetch(url)
       .then(checkStatus)
-      .catch((err) =>
-        console.log(`Failed to get the dependents for URL ${url}:`, err)
+      .catch((err) => {
+        console.error(
+          `${chalk.red("error:")} Failed to get the dependents for URL ${url}:`,
+          err
+        );
+        process.exit(1);
+      });
+    const dependentHtml = await dependentsResult.text().catch((err) => {
+      console.error(
+        `${chalk.red("error:")} Failed to get the HTML for URL ${url}:`,
+        err
       );
-    const dependentHtml = await dependentsResult
-      .text()
-      .catch((err) =>
-        console.log(`Failed to get the HTML for URL ${url}:`, err)
-      );
+      process.exit(1);
+    });
 
     const $ = cheerio.load(dependentHtml);
 
@@ -68,9 +75,10 @@ const checkStatus = (res) => {
       .attr("href");
 
     // Debug.
-    console.log(
-      (dependents.length > 0 && nextPage) || "Reached the end",
-      result.length
+    console.error(
+      chalk.yellow("info: "),
+      (dependents.length > 0 && nextPage) ||
+        `Reached the end (${chalk.green(result.length)} items).`
     );
     if (nextPage && dependents.length > 0 && result.length <= maxDependents)
       return getDependents(`https://www.npmjs.com${nextPage}`, result);
@@ -78,19 +86,25 @@ const checkStatus = (res) => {
     return result;
   }
   const dependents = await getDependents(dependentURL).catch((err) =>
-    console.log(`Failed to get the dependents for ${packageName}`, err)
+    console.error(
+      `${chalk.red("error:")} Failed to get the dependents for ${packageName}`,
+      err
+    )
   );
 
   if (dependents.length === 0) {
-    console.log(
-      `The package ${packageName} has no dependents or doesn't exist.`
+    console.error(
+      `${chalk.red(
+        "error:"
+      )} The package '${packageName}' has no dependents or doesn't exist.`
     );
     return;
   }
 
   // Debug. I'm getting duplicates while scraping for some
   // reason.
-  console.log(
+  console.error(
+    chalk.yellow("info: "),
     `Scraped ${dependents.length} dependents for ${packageName} and of those ${
       Array.from(new Set(dependents)).length
     } are unique.`
@@ -111,8 +125,10 @@ const checkStatus = (res) => {
       .then((res) => res.json())
       .then((json) => Object.values(json))
       .catch((err) => {
-        console.log(
-          `Failed to get the download counts for the un-scoped packages.`
+        console.error(
+          `${chalk.red(
+            "error:"
+          )} Failed to get the download counts for the un-scoped packages.`
         );
         throw err;
       })
@@ -133,8 +149,10 @@ const checkStatus = (res) => {
       .then(checkStatus)
       .then((res) => res.json())
       .catch(() =>
-        console.log(
-          `Failed to get the download counts for the scoped package: ${scoped}`
+        console.error(
+          `${chalk.red(
+            "error:"
+          )} Failed to get the download counts for the scoped package: ${scoped}`
         )
       )
   );
@@ -142,7 +160,12 @@ const checkStatus = (res) => {
   const result = await Promise.all([
     unScopedPromisesFlattened,
     ...scopedPromises,
-  ]).catch((err) => console.log(`Failed to get the download counts.`, err));
+  ]).catch((err) =>
+    console.error(
+      `${chalk.red("error:")} Failed to get the download counts.`,
+      err
+    )
+  );
   const downloadCounts = result.reduce((acc, next) => acc.concat(next), []);
   const sortedDownloadCounts = orderBy(
     downloadCounts,
@@ -154,16 +177,16 @@ const checkStatus = (res) => {
   }, {});
 
   if (failedUnscopedPackages.length > 0) {
-    console.log(
-      `The following un-scoped packages failed and are not included in the results ${failedUnscopedPackages.join(
+    console.error(
+      `${chalk.red(
+        "error:"
+      )} The following un-scoped packages failed and are not included in the results ${failedUnscopedPackages.join(
         ", "
       )}`
     );
   }
 
-  console.log(
-    `The dependents of ${packageName} are:\n`,
-    sortedDownloadCounts,
-    Object.keys(sortedDownloadCounts).length
-  );
+  Object.entries(sortedDownloadCounts).forEach(([dependentName, count]) => {
+    console.log(`${dependentName} ${chalk.green(count)}`);
+  });
 })();

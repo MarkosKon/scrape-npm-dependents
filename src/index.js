@@ -5,6 +5,7 @@ const difference = require("lodash.difference");
 const orderBy = require("lodash.orderby");
 const chunk = require("lodash.chunk");
 const chalk = require("chalk");
+const Table = require("cli-table");
 const { argv } = require("yargs")
   .usage("Usage: $0 [options]")
   .example(
@@ -17,6 +18,11 @@ const { argv } = require("yargs")
   .describe("p", "Package name.")
   .demandOption("p", "Provide a package name with -p package-name.")
   .string("p")
+  // --table or -t
+  .describe("table", "Print output in a table.")
+  .alias("t", "table")
+  .boolean("table")
+  .default("table", true)
   // -h or --help.
   .alias("h", "help")
   // --version. Add a comma, lol.
@@ -24,7 +30,7 @@ const { argv } = require("yargs")
 
 const flatten = require("./flatten");
 
-const { packageName } = argv;
+const { packageName, table: prettyPrint } = argv;
 const dependentURL = `https://www.npmjs.com/browse/depended/${packageName}`;
 const maxDependents = 300;
 
@@ -186,7 +192,19 @@ const checkStatus = (res) => {
     );
   }
 
-  Object.entries(sortedDownloadCounts).forEach(([dependentName, count]) => {
-    console.log(`${dependentName} ${chalk.green(count)}`);
-  });
+  if (prettyPrint) {
+    const table = new Table({
+      head: ["Dependent Name", "Weekly Downloads"],
+    });
+
+    Object.entries(sortedDownloadCounts).forEach(([dependentName, count]) => {
+      table.push([dependentName, count]);
+    });
+
+    console.log(table.toString());
+  } else {
+    Object.entries(sortedDownloadCounts).forEach(([dependentName, count]) => {
+      console.log(`${dependentName} ${chalk.green(count)}`);
+    });
+  }
 })();

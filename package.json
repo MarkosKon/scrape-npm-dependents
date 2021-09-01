@@ -1,11 +1,13 @@
 {
   "name": "scrape-npm-dependents",
-  "description": "A script that sorts by weekly downloads the dependents of a package.",
-  "private": true,
+  "description": "A script that sorts by weekly downloads the dependents of an NPM package.",
   "version": "1.0.0",
-  "main": "src/index.js",
-  "author": "Mark",
   "license": "MIT",
+  "repository": "MarkosKon/scrape-npm-dependents",
+  "author": {
+    "name": "Markos Konstantopoulos",
+    "url": "https://markoskon.com"
+  },
   "bin": {
     "snd": "./src/index.js"
   },

@@ -82,7 +82,7 @@ const checkStatus = (res) => {
 
     // Debug.
     console.error(
-      chalk.yellow("info: "),
+      chalk.blue("info: "),
       (dependents.length > 0 && nextPage) ||
         `Reached the end (${chalk.green(result.length)} items).`
     );
@@ -110,7 +110,7 @@ const checkStatus = (res) => {
   // Debug. I'm getting duplicates while scraping for some
   // reason.
   console.error(
-    chalk.yellow("info: "),
+    chalk.blue("info: "),
     `Scraped ${dependents.length} dependents for ${packageName} and of those ${
       Array.from(new Set(dependents)).length
     } are unique.`

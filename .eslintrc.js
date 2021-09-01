@@ -3,21 +3,21 @@ module.exports = {
     commonjs: true,
     es6: true,
     node: true,
-    "jest/globals": true
+    "jest/globals": true,
   },
   extends: [
     "airbnb-base",
     "plugin:prettier/recommended",
     "plugin:node/recommended",
-    "plugin:jest/recommended"
+    "plugin:jest/recommended",
   ],
   plugins: ["jest"],
   globals: {
     Atomics: "readonly",
-    SharedArrayBuffer: "readonly"
+    SharedArrayBuffer: "readonly",
   },
   parserOptions: {
-    ecmaVersion: 2018
+    ecmaVersion: 2018,
   },
-  rules: { "no-console": "off" }
+  rules: { "no-console": "off" },
 };

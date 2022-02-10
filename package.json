@@ -1,7 +1,7 @@
 {
   "name": "scrape-npm-dependents",
   "description": "A script that sorts by weekly downloads the dependents of an NPM package.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "repository": "MarkosKon/scrape-npm-dependents",
   "author": {
@@ -11,6 +11,10 @@
   "bin": {
     "snd": "./src/index.js"
   },
+  "files": [
+    "src/index.js",
+    "src/flatten/index.js"
+  ],
   "scripts": {
     "start": "node src/index.js",
     "start:m": "nodemon src/index.js --ignore data",
@@ -30,12 +34,10 @@
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "*.{md,json,css}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "dependencies": {
@@ -57,18 +59,18 @@
     "@types/node-fetch": "^2.5.12",
     "@types/yargs": "^17.0.2",
     "cross-env": "^7.0.2",
-    "eslint": "^7.13.0",
-    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint": "^8.8.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-jest": "^26.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^4.3.0",
-    "lint-staged": "^11.1.2",
+    "lint-staged": "^12.3.3",
     "nodemon": "^2.0.6",
     "prettier": "^2.1.2",
-    "react-scripts": "^4.0.0",
+    "react-scripts": "^5.0.0",
     "typescript": "^4.2.2"
   }
 }

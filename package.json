@@ -1,7 +1,7 @@
 {
   "name": "scrape-npm-dependents",
   "description": "A script that sorts by weekly downloads the dependents of an NPM package.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "repository": "MarkosKon/scrape-npm-dependents",
   "author": {

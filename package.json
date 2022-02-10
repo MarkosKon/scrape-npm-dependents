@@ -11,6 +11,10 @@
   "bin": {
     "snd": "./src/index.js"
   },
+  "files": [
+    "src/index.js",
+    "src/flatten/index.js"
+  ],
   "scripts": {
     "start": "node src/index.js",
     "start:m": "nodemon src/index.js --ignore data",

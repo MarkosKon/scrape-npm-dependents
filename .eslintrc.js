@@ -6,12 +6,11 @@ module.exports = {
     "jest/globals": true,
   },
   extends: [
+    "plugin:jest/recommended",
+    "plugin:node/recommended",
     "airbnb-base",
     "plugin:prettier/recommended",
-    "plugin:node/recommended",
-    "plugin:jest/recommended",
   ],
-  plugins: ["jest"],
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly",
